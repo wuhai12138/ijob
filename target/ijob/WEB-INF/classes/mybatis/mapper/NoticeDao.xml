@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="DAO.NoticeDao">
+    <select id="getNotice" resultType="Notice">
+        SELECT
+	      title,
+	      content,
+	      link,
+	      createTime,
+	      noticeId,
+	      groupName,
+		  picture
+        FROM
+	      notice
+	    ORDER BY createTime DESC
+		  LIMIT #{page},20
+
+	</select>
+
+	<select id="getNoticeAPP" resultType="Notice">
+		SELECT
+		title,
+		content,
+		link,
+		createTime,
+		noticeId,
+		groupName,
+		picture
+		FROM
+		notice
+		ORDER BY createTime DESC
+
+	</select>
+
+	<select id="getNoticeById" resultType="Notice">
+		SELECT *
+		FROM notice
+		WHERE noticeId = #{id}
+	</select>
+
+	<insert id="addNotice" parameterType="Notice">
+		INSERT INTO notice
+        (title,content,link,groupName,picture)
+        VALUES
+        (#{title},#{content},#{link},#{groupName},#{picture})
+	</insert>
+
+	<update id="updateNotice" parameterType="Notice">
+		UPDATE notice
+		<set>
+			<if test="title !=null">title = #{title},</if>
+			<if test="content !=null">content = #{content},</if>
+			<if test="link !=null">link = #{link},</if>
+			<if test="groupName !=null">groupName = #{groupName},</if>
+			<if test="picture != null">picture = #{picture}</if>
+		</set>
+		WHERE noticeId = #{noticeId}
+	</update>
+
+	<delete id="deleteNotice" parameterType="Notice">
+		DELETE
+		FROM notice
+		WHERE noticeId=#{noticeId}
+	</delete>
+</mapper>

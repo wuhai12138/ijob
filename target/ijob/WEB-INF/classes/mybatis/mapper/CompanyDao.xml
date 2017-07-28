@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="DAO.CompanyDao">
+    <select id="findAll" resultType="Company" parameterType="java.util.HashMap">
+        SELECT * from company
+        <where>
+            <if test="search != null and search !=''">
+                name like CONCAT(CONCAT('%', #{search}), '%')
+            </if>
+        </where>
+        ORDER BY tid DESC
+        limit #{page},#{row}
+    </select>
+
+    <select id="countAll" resultType="java.lang.Integer" parameterType="java.util.HashMap">
+        SELECT count(*) from company
+        <where>
+            <if test="search != null and search !=''">
+                name like CONCAT(CONCAT('%', #{search}), '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="findAllByPage" resultType="Company">
+        SELECT * from company
+        ORDER BY tid DESC
+        limit #{page},20
+    </select>
+
+    <select id="findOneById" parameterType="model.Company" resultType="Company">
+        SELECT * from company
+        WHERE tid=#{tid}
+    </select>
+
+    <select id="findOneByName" parameterType="model.Company" resultType="Company">
+        SELECT * from company
+        WHERE name=#{name}
+    </select>
+
+    <insert id="addCompany" parameterType="model.Company" useGeneratedKeys="true" keyProperty="tid">
+        INSERT INTO company
+        (name
+        <if test="description !='' and description !=null">,description</if>
+        <if test="link !='' and link !=null">,link</if>
+        )
+        VALUES
+        (#{name}
+        <if test="description !='' and description !=null">,#{description}</if>
+        <if test="link !='' and link !=null">,#{link}</if>
+        )
+    </insert>
+
+    <update id="updateCompany" parameterType="model.Company">
+        UPDATE company
+        <set>
+            <if test="name !='' and name !=null">name = #{name},</if>
+            <if test="description !='' and description !=null">description = #{description},</if>
+            <if test="link !='' and link !=null">link = #{link},</if>
+        </set>
+        WHERE tid = #{tid}
+    </update>
+
+    <delete id="deleteCompany" parameterType="model.Company">
+        DELETE FROM company
+        where tid = #{tid}
+    </delete>
+</mapper>

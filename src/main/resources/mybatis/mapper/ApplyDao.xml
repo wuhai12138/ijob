@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="DAO.ApplyDao">
+    <select id="findAll" resultType="Apply" parameterType="java.util.HashMap">
+        SELECT * from apply
+        WHERE studentId = #{studentId}
+        ORDER BY createTime
+        limit #{page},20
+    </select>
+
+    <select id="findStudentByJobId" resultType="Apply" parameterType="model.Apply">
+        SELECT a.*,s.name as studentName,s.code as code,s.link,s.introduction from apply a
+        LEFT JOIN student s ON a.studentId = s.tid
+        WHERE jobId = #{jobId}
+        ORDER BY createTime
+    </select>
+
+    <select id="findOneById" parameterType="model.Apply" resultType="Apply">
+        SELECT * from apply
+        WHERE tid=#{tid}
+    </select>
+
+    <select id="checkDuplicate" parameterType="model.Apply" resultType="Apply">
+        SELECT * from apply
+        WHERE studentId = #{studentId} and jobId = #{jobId}
+    </select>
+
+    <select id="countByJobId" parameterType="java.lang.String" resultType="java.lang.Integer">
+        SELECT count(*) from apply
+        WHERE jobId = #{jobId}
+    </select>
+
+    <insert id="addApply" parameterType="model.Apply" useGeneratedKeys="true" keyProperty="tid">
+        INSERT INTO apply
+        (studentId,jobId,state)
+        VALUES
+        (#{studentId},#{jobId},#{state})
+    </insert>
+
+    <update id="updateApply" parameterType="model.Apply">
+        UPDATE apply
+        <set>
+            <if test="studentId !='' and studentId !=null">studentId = #{studentId}</if>
+            <if test="jobId !='' and jobId !=null">jobId = #{jobId}</if>
+            <if test="state !='' and state !=null">state = #{state}</if>
+        </set>
+        WHERE tid = #{tid}
+    </update>
+
+    <delete id="deleteApply" parameterType="model.Apply">
+        DELETE FROM apply
+        where tid = #{tid}
+    </delete>
+</mapper>

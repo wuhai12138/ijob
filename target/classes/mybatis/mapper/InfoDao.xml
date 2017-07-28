@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="DAO.InfoDao">
+    <select id="findAll" resultType="Info">
+        SELECT * from info
+        ORDER BY tid DESC
+        limit #{page},20
+    </select>
+
+    <select id="findAllByPageAndType" resultType="Info" parameterType="java.util.HashMap">
+        SELECT * from info
+        WHERE
+        <if test="types!=null and types!=''">
+            (
+        </if>
+        type = #{type}
+        <if test="types!=null and types!=''">
+            or type = #{types})
+        </if>
+        <if test="type==6 and kind!=null">
+            and kind = #{kind}
+        </if>
+        <if test="search!=null and search!=''">
+            and title like CONCAT(CONCAT('%', #{search}), '%')
+        </if>
+        <!--<if test="canEnroll!=null and canEnroll!=''">-->
+            <!--AND canEnroll != 0-->
+        <!--</if>-->
+        order BY tid DESC
+        limit #{page},#{row}
+    </select>
+
+    <select id="findAllWithEnroll" resultType="Info">
+        SELECT i.title,i.link,s.name,s.introduction,e.createTime from info i
+        LEFT JOIN enroll e ON e.infoId = i.tid
+        LEFT JOIN student s ON s.tid = e.studentId
+        WHERE ( i.type = 4 or i.type = 5)
+    </select>
+
+    <select id="findAllWithType" resultType="Info">
+        SELECT i.title,i.link,s.name,s.introduction,e.createTime from info i
+        LEFT JOIN enroll e ON e.infoId = i.tid
+        LEFT JOIN student s ON s.tid = e.studentId
+        WHERE ( i.type = #{type})
+    </select>
+
+    <select id="countAllByType" resultType="java.lang.Integer" parameterType="java.util.HashMap">
+        SELECT count(*) from info
+        WHERE type = #{type}
+        <if test="search!=null and search!=''">
+            and title like CONCAT(CONCAT('%', #{search}), '%')
+        </if>
+    </select>
+
+    <select id="findAllByStudentId" resultType="Info">
+        SELECT i.*,e.createTime from enroll e
+        LEFT JOIN info i ON e.infoId = i.tid
+        WHERE e.studentId = #{studentId}
+        ORDER BY e.createTime DESC
+        limit #{page},20
+    </select>
+
+    <select id="findOneById" parameterType="model.Info" resultType="Info">
+        SELECT * from info
+        WHERE tid=#{tid}
+    </select>
+
+    <insert id="addInfo" parameterType="model.Info" useGeneratedKeys="true" keyProperty="tid">
+        INSERT INTO info
+        (type,title,description,link,img,canEnroll,kind,limitNum)
+        VALUES
+        (#{type},#{title},#{description},#{link},#{img},#{canEnroll},#{kind},#{limitNum})
+    </insert>
+
+    <update id="updateInfo" parameterType="model.Info">
+        UPDATE info
+        <set>
+            <if test="type !='' and type !=null">type = #{type},</if>
+            <if test="title !='' and title !=null">title = #{title},</if>
+            <if test="description !='' and description !=null">description = #{description},</if>
+            <if test="link !='' and link !=null">link = #{link},</if>
+            <if test="img !='' and img !=null">img = #{img},</if>
+            <if test="canEnroll !=null">canEnroll = #{canEnroll},</if>
+            <if test="kind !=null">kind = #{kind},</if>
+            <if test="limitNum !=null">limitNum = #{limitNum},</if>
+        </set>
+        WHERE tid = #{tid}
+    </update>
+
+    <update id="changeInfoStatus" parameterType="model.Info">
+        UPDATE info
+        set canEnroll=ABS(canEnroll-1)
+        WHERE tid = #{tid}
+    </update>
+
+    <delete id="deleteInfo" parameterType="model.Info">
+        DELETE FROM info
+        where tid = #{tid}
+    </delete>
+</mapper>

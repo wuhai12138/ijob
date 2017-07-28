@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="DAO.SchoolDao">
+    <select id="findAll" resultType="School" parameterType="model.School">
+        SELECT * from school
+        <where>
+            <if test="search != null and search !=''">
+                name like CONCAT(CONCAT('%', #{search}), '%')
+            </if>
+        </where>
+        ORDER BY tid DESC
+        limit #{page},#{row}
+    </select>
+
+    <select id="countAll" resultType="java.lang.Integer" parameterType="model.School">
+        SELECT COUNT(*) from school
+        <where>
+            <if test="search != null and search !=''">
+                name like CONCAT(CONCAT('%', #{search}), '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="findAllWithOutPage" resultType="School">
+        SELECT * from school
+    </select>
+
+    <select id="findOneById" parameterType="model.School" resultType="School">
+        SELECT * from school
+        WHERE tid=#{tid}
+    </select>
+
+    <select id="checkOneByName" parameterType="model.School" resultType="School">
+        SELECT * from school
+        WHERE name = #{name}
+    </select>
+
+    <insert id="addSchool" parameterType="model.School" useGeneratedKeys="true" keyProperty="tid">
+        INSERT INTO school
+        (name)
+        VALUES
+        (#{name})
+    </insert>
+
+    <update id="updateSchool" parameterType="model.School">
+        UPDATE school
+        <set>
+            <if test="name != '' and name != null">name = #{name}</if>
+        </set>
+        WHERE tid = #{tid}
+    </update>
+
+    <delete id="deleteSchool" parameterType="model.School">
+        DELETE FROM school
+        where tid = #{tid}
+    </delete>
+</mapper>

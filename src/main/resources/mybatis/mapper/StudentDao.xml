@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="DAO.StudentDao">
+    <select id="findAll" resultType="Student" parameterType="java.util.HashMap">
+        SELECT a.*,b.name as schoolName from student a
+        LEFT JOIN school b ON a.schoolId = b.tid
+        <where>
+            <if test="search != null and search !=''">
+                code like CONCAT(CONCAT('%', #{search}), '%')
+            </if>
+        </where>
+        ORDER BY tid DESC
+        limit #{page},#{row}
+    </select>
+
+    <select id="getAll" resultType="Student">
+        SELECT * from student
+    </select>
+
+    <select id="countAll" resultType="java.lang.Integer" parameterType="java.util.HashMap">
+        SELECT count(*) from student
+        <where>
+            <if test="search != null and search !=''">
+                code like CONCAT(CONCAT('%', #{search}), '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="findOneById" parameterType="model.Student" resultType="Student">
+        SELECT * from student
+        WHERE tid=#{tid}
+    </select>
+
+    <select id="findOneByCodeAndPassword" parameterType="model.Student" resultType="Student">
+        SELECT * from student
+        WHERE code=#{code} AND password=#{password}
+    </select>
+
+    <select id="findOneByCode" parameterType="model.Student" resultType="Student">
+        SELECT * from student
+        WHERE code=#{code}
+    </select>
+
+    <select id="fillAllByCode" parameterType="model.Student" resultType="Student">
+        SELECT * from student
+        WHERE code=#{member}
+    </select>
+
+    <insert id="addStudent" parameterType="model.Student" useGeneratedKeys="true" keyProperty="tid">
+        INSERT INTO student
+        (code,name,nick,email,phone,introduction,link,password,schoolId,hxId,status)
+        VALUES
+        (#{code},#{name},#{nick},#{email},#{phone},#{introduction},#{link},#{password},#{schoolId},#{hxId},#{status})
+    </insert>
+
+    <update id="updateStudent" parameterType="model.Student">
+        UPDATE student
+        <set>
+            <if test="code !='' and code !=null">code = #{code},</if>
+            <if test="name !='' and name !=null">name = #{name},</if>
+            <if test="nick !='' and nick !=null">nick = #{nick},</if>
+            <if test="email !='' and email !=null">email = #{email},</if>
+            <if test="phone !='' and phone !=null">phone = #{phone},</if>
+            <if test="introduction !='' and introduction !=null">introduction = #{introduction},</if>
+            <if test="link !='' and link !=null">link = #{link},</if>
+            <if test="password !='' and password !=null">password = #{password},</if>
+            <if test="schoolId !='' and schoolId !=null">schoolId = #{schoolId},</if>
+            <if test="hxId !='' and hxId !=null">hxId = #{hxId},</if>
+            <if test="status !='' and status !=null">status = #{status},</if>
+        </set>
+        WHERE tid = #{tid}
+    </update>
+
+    <delete id="deleteStudent" parameterType="model.Student">
+        DELETE FROM student
+        where tid = #{tid}
+    </delete>
+
+    <insert id="addExcel" parameterType="ArrayList">
+        insert into student (
+        code,
+        name,
+        nick,
+        email,
+        phone,
+        introduction,
+        link,
+        password
+        )
+        values
+        <!--迭代器： foreach是遍历集合、数组 （允许批量插入）item别名，根据别名获取数据-->
+        <foreach collection="list" item="student" index="index" separator=",">
+            (
+            #{student.code},#{student.name},#{student.nick},#{student.email},#{student.phone},#{student.introduction},
+            #{student.link},#{student.password}
+            )
+        </foreach>
+    </insert>
+
+</mapper>

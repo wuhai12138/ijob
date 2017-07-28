@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <settings>
+        <setting name="jdbcTypeForNull" value="NULL" />
+    </settings>
+    <typeAliases>
+        <typeAlias type="model.User" alias="User"/>
+        <typeAlias type="model.Company" alias="Company"/>
+        <typeAlias type="model.Apply" alias="Apply"/>
+        <typeAlias type="model.Enroll" alias="Enroll"/>
+        <typeAlias type="model.Info" alias="Info"/>
+        <typeAlias type="model.Job" alias="Job"/>
+        <typeAlias type="model.School" alias="School"/>
+        <typeAlias type="model.Student" alias="Student"/>
+        <typeAlias type="model.Notice" alias="Notice"/>
+
+    </typeAliases>
+
+    <typeHandlers>
+        <!--<typeHandler handler="mybatis.handler.BooleanIntegerTypeHandler" javaType="Boolean" jdbcType="INTEGER"/>-->
+        <!--<typeHandler handler="mybatis.handler.StringIntegerTypeHandler" javaType="String" jdbcType="INTEGER"/>-->
+    </typeHandlers>
+</configuration>

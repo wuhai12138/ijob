@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="DAO.JobDao">
+    <select id="findAll" resultType="Job" parameterType="java.util.HashMap">
+        SELECT * from job
+        <where>
+            visible = 1
+            <if test="search != null and search !=''">
+                AND name like CONCAT(CONCAT('%', #{search}), '%')
+            </if>
+        </where>
+        ORDER BY tid DESC
+        limit #{page},#{row}
+    </select>
+
+    <select id="findAllWithType" resultType="Job" parameterType="java.util.HashMap">
+        SELECT * from job
+        <where>
+            type = #{type} AND visible = 1
+            <if test="search != null and search !=''">
+                AND name like CONCAT(CONCAT('%', #{search}), '%')
+            </if>
+        </where>
+        ORDER BY tid DESC
+        limit #{page},#{row}
+    </select>
+
+    <select id="findAllWithApply" resultType="Job" parameterType="java.util.HashMap">
+        SELECT j.*,s.code,s.introduction,s.name as studentName,a.createTime as applyTime from job j
+        LEFT JOIN apply a ON j.tid = a.jobId
+        LEFT JOIN student s ON a.studentId = s.tid
+    </select>
+
+    <select id="countAll" resultType="java.lang.Integer" parameterType="java.util.HashMap">
+        SELECT count(*) from job
+        <where>
+            visible = 1
+            <if test="search!=null and search!=''">
+                and name like CONCAT(CONCAT('%', #{search}), '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="findAllByPageAndType" resultType="Job">
+        SELECT * from job
+        WHERE type=#{type} AND visible = 1
+        ORDER BY tid DESC
+        limit #{page},20
+    </select>
+
+    <select id="findAllByStudentId" resultType="Job" parameterType="java.util.HashMap">
+        SELECT j.* from apply a
+        LEFT JOIN job j ON a.jobId = j.tid
+        WHERE a.studentId = #{studentId}
+        ORDER BY a.createTime DESC
+        limit #{page},20
+    </select>
+
+    <select id="findOneById" parameterType="model.Job" resultType="Job">
+        SELECT * from job
+        WHERE tid=#{tid}
+    </select>
+
+    <insert id="addJob" parameterType="model.Job" useGeneratedKeys="true" keyProperty="tid">
+        INSERT INTO job
+        (<if test="company != null and company!=''">company,</if>
+        <if test="salary != null and salary!=''">salary,</if>
+        <if test="description != null and description!=''">description,</if>
+        <if test="requirement != null and requirement!=''">requirement,</if>
+        <if test="phone != null and phone!=''">phone,</if>
+        <if test="type != null and type!=''">type,</if>
+        <if test="image != null and image!=''">image,</if>
+        <if test="limitNum != null and limitNum!=''">limitNum,</if>
+        name)
+        VALUES
+        (<if test="company != null and company!=''">#{company},</if>
+        <if test="salary != null and salary!=''">#{salary},</if>
+        <if test="description != null and description!=''">#{description},</if>
+        <if test="requirement != null and requirement!=''">#{requirement},</if>
+        <if test="phone != null and phone!=''">#{phone},</if>
+        <if test="type != null and type!=''">#{type},</if>
+        <if test="image != null and image!=''">image,</if>
+        <if test="limitNum != null and limitNum!=''">#{limitNum},</if>
+        #{name})
+    </insert>
+
+    <update id="updateJob" parameterType="model.Job">
+        UPDATE job
+        <set>
+            <if test="name !='' and name !=null">name = #{name},</if>
+            <if test="company !='' and company !=null">company = #{company},</if>
+            <if test="salary !='' and salary !=null">salary = #{salary},</if>
+            <if test="description !='' and description !=null">description = #{description},</if>
+            <if test="requirement !='' and requirement !=null">requirement = #{requirement},</if>
+            <if test="phone !='' and phone !=null">phone = #{phone},</if>
+            <if test="type !='' and type !=null">type = #{type},</if>
+            <if test="image !='' and image !=null">image = #{image},</if>
+            <if test="limitNum !='' and limitNum !=null">limitNum = #{limitNum},</if>
+        </set>
+        WHERE tid = #{tid}
+    </update>
+
+    <update id="deleteJob" parameterType="model.Job">
+        update job
+        <set>
+            visible = 0
+        </set>
+        WHERE tid = #{tid}
+    </update>
+</mapper>

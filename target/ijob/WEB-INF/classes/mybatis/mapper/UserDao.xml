@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="DAO.UserDao">
+    <select id="findAllUser" resultType="User">
+        SELECT a.*,s.name from admin a
+        LEFT JOIN school s ON a.schoolId = s.tid
+        ORDER BY tid DESC
+    </select>
+
+    <select id="findOneById" parameterType="model.User" resultType="User">
+        SELECT * from admin
+        WHERE tid=#{tid}
+    </select>
+
+    <select id="findOneByName" parameterType="model.User" resultType="User">
+        SELECT * from admin
+        WHERE userName=#{userName}
+    </select>
+
+    <select id="findOneByNameAndPwd" parameterType="model.User" resultType="User">
+        SELECT * from admin
+        WHERE userName = #{userName} AND password = #{password}
+    </select>
+
+    <insert id="addUser" parameterType="model.User" useGeneratedKeys="true" keyProperty="tid">
+        INSERT INTO admin
+        (userName,password,schoolId,auth)
+        VALUES
+        (#{userName},#{password},#{schoolId},#{auth})
+    </insert>
+
+    <update id="updateUser" parameterType="model.User">
+        UPDATE admin
+        <set>
+            <if test="userName !='' and userName !=null">userName = #{userName},</if>
+            <if test="password !='' and password !=null">password = #{password},</if>
+            <if test="schoolId !='' and schoolId !=null">schoolId = #{schoolId},</if>
+            <if test="auth !=null">auth = #{auth},</if>
+        </set>
+        WHERE tid = #{tid}
+    </update>
+
+    <delete id="deleteUser" parameterType="model.User">
+        DELETE FROM admin
+        where tid = #{tid}
+    </delete>
+</mapper>
