@@ -123,7 +123,29 @@ public class GroupController extends BaseController {
     @RequestMapping(value="/memberList")
     public String memberList(Model model, HttpServletRequest request,String groupid, String flag){
         //环信群组成员
-
+//临时使用
+//        List<String> idList = new ArrayList<String>();
+//        idList.add("12588744245252");
+//        idList.add("12588206325761");
+//        idList.add("12587936841730");
+//        idList.add("12587375853569");
+//        idList.add("12587192352770");
+//        idList.add("12586945937409");
+//        idList.add("12586723639298");
+//        idList.add("12586370269185");
+//        for (int j = 0; j<idList.size(); j++){
+//            String token = request.getSession().getAttribute("token").toString();
+//            String url = "https://a1.easemob.com/ijob-dh/ijob/chatgroups/"+idList.get(j)+"/users";
+//            String res = HttpUtil.groupMember(url,token);
+//            Map<String,Object> map = jsonUtil.json2Map(res);
+//            List<Student> studentList = jsonUtil.json2List(map.get("data").toString(),Student.class);
+//            for(int i=0; i < studentList.size(); i++){
+//                studentList.get(i).setCode(idList.get(j));
+//                noticeService.insertStudentCode(studentList.get(i));
+//            }
+//            System.out.println("第" + j + "組學生數量:" + studentList.size());
+//        }
+//临时使用
             String token = request.getSession().getAttribute("token").toString();
             String url = "https://a1.easemob.com/ijob-dh/ijob/chatgroups/"+groupid+"/users";
             String res = HttpUtil.groupMember(url,token);
@@ -155,6 +177,16 @@ public class GroupController extends BaseController {
         String token = request.getSession().getAttribute("token").toString();
         String url = "https://a1.easemob.com/ijob-dh/ijob/chatgroups/"+groupid+"/users";
         String[] memberList = member.split(",");
+        System.out.println(">>>>>>>>>>>>>>>>>>>member>>>>>>>>>>>>>>>>>>>>>>>"+member);
+        System.out.println(">>>>>>>>>>>>>>>>>>>memberList>>>>>>>>>>>>>>>>>>>>>>>"+memberList[0]);
+        System.out.println(">>>>>>>>>>>>>>>>>>>groupid>>>>>>>>>>>>>>>>>>>>>>>"+groupid);
+
+        for(int i = 0; i < memberList.length; i ++){
+            Student student= new Student();
+            student.setMember(memberList[i]);
+            student.setCode(groupid);
+            noticeService.insertStudentCode(student);
+        }
         GroupMember groupMember = new GroupMember(memberList);
         int code = HttpUtil.saveMember(url,token,groupMember);
         if (code == 200) {

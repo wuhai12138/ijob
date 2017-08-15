@@ -51,7 +51,7 @@
                                         <button type="button" class="btn btn-info btn-xs" onclick="deleteMember('${list.groupid?number?c}')">删除成员</button>
                                         <button type="button" class="btn btn-warning btn-xs" onclick="updateOne('${list.groupid?number?c}')">修改</button>
                                         <button type="button" class="btn btn-danger btn-xs" onclick="deleteOne('${list.groupid?number?c}')">删除</button>
-                                        <button type="button" class="btn btn-success btn-xs" onclick="addMotice('${list.groupname}')">新增公告</button>
+                                        <button type="button" class="btn btn-success btn-xs" onclick="addMotice('${list.groupname}','${list.groupid?number?c}')">新增公告</button>
                                     </td>
                                 </tr>
                                 </#list>
@@ -183,8 +183,8 @@
             });
         }
 
-        function addMotice(name){
-            var url = 'noticeDetail.do?groupName='+name;
+        function addMotice(groupname,groupid){
+            var url = 'noticeDetail.do?groupName='+groupname+'&groupId='+groupid;
             layer.open({
                 type: 2,
                 title: '新增公告',

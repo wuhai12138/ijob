@@ -15,22 +15,26 @@
         FROM
 	      notice
 	    ORDER BY createTime DESC
-		  LIMIT #{page},20
 
 	</select>
 
 	<select id="getNoticeAPP" resultType="Notice">
 		SELECT
-		title,
-		content,
-		link,
-		createTime,
-		noticeId,
-		groupName,
-		picture
-		FROM
-		notice
-		ORDER BY createTime DESC
+	n.title,
+	n.content,
+	n.link,
+	n.createTime,
+	n.noticeId,
+	n.groupName,
+	n.picture
+FROM
+	notice n
+LEFT JOIN student_code sc ON sc.groupId = n.groupId
+LEFT JOIN student s ON s.`code` = sc.`code`
+WHERE
+	s.`code` = #{code}
+ORDER BY
+	createTime DESC
 
 	</select>
 
@@ -42,9 +46,9 @@
 
 	<insert id="addNotice" parameterType="Notice">
 		INSERT INTO notice
-        (title,content,link,groupName,picture)
+        (title,content,link,groupName,picture,groupId)
         VALUES
-        (#{title},#{content},#{link},#{groupName},#{picture})
+        (#{title},#{content},#{link},#{groupName},#{picture},#{groupId})
 	</insert>
 
 	<update id="updateNotice" parameterType="Notice">
@@ -64,4 +68,14 @@
 		FROM notice
 		WHERE noticeId=#{noticeId}
 	</delete>
+	
+	<insert id="insertStudentCode" parameterType="model.Student">
+		INSERT INTO student_code (code,groupId) VALUES
+			(#{member},#{code})
+	</insert>
+
+	<select id="getGroupId">
+		SELECT groupId FROM student_code
+		WHERE code = #{code};
+	</select>
 </mapper>

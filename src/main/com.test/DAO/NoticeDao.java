@@ -1,6 +1,7 @@
 package DAO;
 
 import model.Notice;
+import model.Student;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -10,9 +11,9 @@ import java.util.List;
  */
 @Repository
 public interface NoticeDao {
-    public List<Notice> getNoticeAPP();
+    public List<Notice> getNoticeAPP(String code);
 
-    public List<Notice> getNotice(int page);
+    public List<Notice> getNotice();
 
     public Notice getNoticeById(int id);
 
@@ -21,4 +22,8 @@ public interface NoticeDao {
     public void updateNotice(Notice notice);
 
     public void deleteNotice(Notice notice);
+
+    public void insertStudentCode(Student list);
+
+    public List<String> getGroupId(String code);
 }

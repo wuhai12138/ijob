@@ -16,6 +16,7 @@
         <div class="row">
             <input id="noticeId" name="noticeId" <#if updateNotice??>value="${updateNotice.noticeId}"</#if> hidden>
         <#if groupName??><input id="groupName" name="groupName" value="${groupName}" hidden></#if>
+        <#if groupId??><input id="groupId" name="groupId" value="${groupId}" hidden></#if>
             <div class="col-xs-12">
                 <div class="form-group">
                     <label class="col-xs-3 control-label" style="text-align:right">标题：</label>
@@ -99,7 +100,8 @@
         url = encodeURI(url);
     <#else>
         var groupName = $("#groupName").val();
-        var url = "addNotice.do?title="+title+"&groupName="+groupName+"&content="+content+"&link="+link;
+        var groupId = $("#groupId").val();
+        var url = "addNotice.do?title="+title+"&groupName="+groupName+"&content="+content+"&link="+link+"&groupId="+groupId;
         url = encodeURI(url);
     </#if>
         $.ajaxFileUpload({

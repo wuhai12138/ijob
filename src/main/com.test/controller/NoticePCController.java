@@ -33,7 +33,7 @@ public class NoticePCController {
     public String getNotice(Model model, int page) {
         try {
             page = (page - 1) * 20;
-            List<Notice> list = noticeService.getNoticeAPP();
+            List<Notice> list = noticeService.getNotice();
             model.addAttribute("noticeList", list);
             return "noticeList";
         } catch (Exception e) {
@@ -51,6 +51,9 @@ public class NoticePCController {
             return "noticeDetail";
         } else {
             model.addAttribute("groupName", notice.getGroupName());
+            model.addAttribute("groupId", notice.getGroupId());
+            System.out.println("99999999999999999999999999999999999999999999999999999999999999999999999999999999getGroupName99999999999999"+notice.getGroupName());
+            System.out.println("99999999999999999999999999999999999999999999999999999999999999999999999999999999999getGroupName99999999999"+notice.getGroupId());
             return "noticeDetail";
         }
     }
@@ -64,6 +67,7 @@ public class NoticePCController {
             notice.setTitle(URLDecoder.decode(notice.getTitle(), "UTF-8"));
             notice.setContent(URLDecoder.decode(notice.getContent(), "UTF-8"));
             notice.setLink(URLDecoder.decode(notice.getLink(), "UTF-8"));
+            notice.setGroupId(URLDecoder.decode(notice.getGroupId(), "UTF-8"));
             noticeService.addNotice(notice);
             return "success";
         } catch (Exception e) {
